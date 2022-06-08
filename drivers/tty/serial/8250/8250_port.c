@@ -1512,6 +1512,8 @@ static inline void __stop_tx(struct uart_8250_port *p)
 
 		u64 stop_delay = 0;
 
+		p->lsr_saved_flags |= lsr & LSR_SAVE_FLAGS;
+
 		if (!(lsr & UART_LSR_THRE))
 			return;
 

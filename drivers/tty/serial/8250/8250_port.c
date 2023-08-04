@@ -1440,12 +1440,32 @@ void serial8250_em485_stop_tx(struct uart_8250_port *p)
 {
 	unsigned char mcr = serial8250_in_MCR(p);
 
+#if defined(CONFIG_ARCH_ROCKCHIP) && defined(CONFIG_NO_GKI)
+	int value = 0;
+
+	if (p->port.rs485_de_gpio) {
+		if (p->port.rs485.flags & SER_RS485_RTS_AFTER_SEND)
+			value = 0;
+		else
+			value = 1;
+
+		gpiod_set_value(p->port.rs485_de_gpio, value);
+		DEBUG_EM485("%s ttyS%d gpio:%d\n", __func__, p->port.line, value);
+	} else {
+		if (p->port.rs485.flags & SER_RS485_RTS_AFTER_SEND)
+			mcr |= UART_MCR_RTS;
+		else
+			mcr &= ~UART_MCR_RTS;
+		serial8250_out_MCR(p, mcr);
+		DEBUG_EM485("%s ttyS%d mcr:%02x\n", __func__, p->port.line, mcr);
+	}
+#else
 	if (p->port.rs485.flags & SER_RS485_RTS_AFTER_SEND)
 		mcr |= UART_MCR_RTS;
 	else
 		mcr &= ~UART_MCR_RTS;
 	serial8250_out_MCR(p, mcr);
-
+#endif
 	/*
 	 * Empty the RX FIFO, we are not interested in anything
 	 * received during the half-duplex transmission.
@@ -1623,15 +1643,33 @@ static inline void __start_tx(struct uart_port *port)
 void serial8250_em485_start_tx(struct uart_8250_port *up)
 {
 	unsigned char mcr = serial8250_in_MCR(up);
+#if defined(CONFIG_ARCH_ROCKCHIP) && defined(CONFIG_NO_GKI)
+	int value = 0;
+#endif
 
 	if (!(up->port.rs485.flags & SER_RS485_RX_DURING_TX))
 		serial8250_stop_rx(&up->port);
+
+#if defined(CONFIG_ARCH_ROCKCHIP) && defined(CONFIG_NO_GKI)
+	if (up->port.rs485_de_gpio) {
+		if (up->port.rs485.flags & SER_RS485_RTS_ON_SEND)
+			value = 0;
+		else
+			value = 1;
+		gpiod_set_value(up->port.rs485_de_gpio, value);
+		DEBUG_EM485("%s ttyS%d gpio:%d\n", __func__, up->port.line, value);
+		return;
+	}
+#endif
 
 	if (up->port.rs485.flags & SER_RS485_RTS_ON_SEND)
 		mcr |= UART_MCR_RTS;
 	else
 		mcr &= ~UART_MCR_RTS;
 	serial8250_out_MCR(up, mcr);
+#if defined(CONFIG_ARCH_ROCKCHIP) && defined(CONFIG_NO_GKI)
+	DEBUG_EM485("%s ttyS%d mcr:%02x\n", __func__, up->port.line, mcr);
+#endif
 }
 EXPORT_SYMBOL_GPL(serial8250_em485_start_tx);
 

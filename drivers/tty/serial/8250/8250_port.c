@@ -51,6 +51,14 @@
 #define DEBUG_AUTOCONF(fmt...)	do { } while (0)
 #endif
 
+#if defined(CONFIG_ARCH_ROCKCHIP) && defined(CONFIG_NO_GKI)
+#if 0
+#define DEBUG_EM485(fmt...)	printk(fmt)
+#else
+#define DEBUG_EM485(fmt...)	do { } while (0)
+#endif
+#endif
+
 #define BOTH_EMPTY	(UART_LSR_TEMT | UART_LSR_THRE)
 
 /*
@@ -600,6 +608,9 @@ EXPORT_SYMBOL_GPL(serial8250_rpm_put);
  */
 static int serial8250_em485_init(struct uart_8250_port *p)
 {
+#if defined(CONFIG_ARCH_ROCKCHIP) && defined(CONFIG_NO_GKI)
+	DEBUG_EM485("%s ttyS%d\n", __func__, p->port.line);
+#endif
 	if (p->em485)
 		goto deassert_rts;
 
@@ -672,7 +683,9 @@ int serial8250_em485_config(struct uart_port *port, struct serial_rs485 *rs485)
 
 	gpiod_set_value(port->rs485_term_gpio,
 			rs485->flags & SER_RS485_TERMINATE_BUS);
-
+#if defined(CONFIG_ARCH_ROCKCHIP) && defined(CONFIG_NO_GKI)
+	DEBUG_EM485("%s ttyS%d\n", __func__, port->line);
+#endif
 	/*
 	 * Both serial8250_em485_init() and serial8250_em485_destroy()
 	 * are idempotent.
@@ -1480,7 +1493,9 @@ static void start_hrtimer_ms(struct hrtimer *hrt, unsigned long msec)
 static void __stop_tx_rs485(struct uart_8250_port *p, u64 stop_delay)
 {
 	struct uart_8250_em485 *em485 = p->em485;
-
+#if defined(CONFIG_ARCH_ROCKCHIP) && defined(CONFIG_NO_GKI)
+	DEBUG_EM485("%s ttyS%d\n", __func__, p->port.line);
+#endif
 	stop_delay += (u64)p->port.rs485.delay_rts_after_send * NSEC_PER_MSEC;
 
 	/*
@@ -1526,6 +1541,9 @@ static inline void __stop_tx(struct uart_8250_port *p)
 		 * for emptying of the shift register.
 		 */
 		if (!(lsr & UART_LSR_TEMT)) {
+#if defined(CONFIG_ARCH_ROCKCHIP) && defined(CONFIG_NO_GKI)
+			stop_delay = p->port.frame_time + 10000;
+#else
 			if (!(p->capabilities & UART_CAP_NOTEMT))
 				return;
 			/*
@@ -1535,12 +1553,8 @@ static inline void __stop_tx(struct uart_8250_port *p)
 			 * rather than after it is fully sent.
 			 * Roughly estimate 1 extra bit here with / 7.
 			 */
-#if defined(CONFIG_ARCH_ROCKCHIP) && defined(CONFIG_NO_GKI)
-			stop_delay = p->port.frame_time + DIV_ROUND_UP(p->port.frame_time, 7);
-#else
-			stop_delay = 1000000;
+			stop_delay = 1 * NSEC_PER_MSEC;
 #endif
-
 		}
 		__stop_tx_rs485(p, stop_delay);
 	}

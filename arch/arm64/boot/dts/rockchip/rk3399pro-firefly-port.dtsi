@@ -164,6 +164,74 @@
 		mpu-debug = <1>;
 	};
 
+        xc7160b: xc7160b@1b {
+		status = "okay";
+                compatible = "firefly,xc7160";
+                reg = <0x1b>;
+                clocks = <&cru SCLK_CIF_OUT>;
+                clock-names = "xvclk";
+                //avdd-supply = <&vcc_mipi>;
+                reset-gpios = <&gpio2 6 GPIO_ACTIVE_HIGH>;
+                pwdn-gpios = <&gpio3 27 GPIO_ACTIVE_HIGH>;
+                pinctrl-names = "rockchip,camera_default";
+                pinctrl-0 = <&cif_clkout>;
+
+                firefly,clkout-enabled-index = <0>;
+                rockchip,camera-module-index = <0>;
+                rockchip,camera-module-facing = "back";
+                rockchip,camera-module-name = "NC";
+                rockchip,camera-module-lens-name = "NC";
+
+                port {
+                        xc7160b_out: endpoint {
+                                remote-endpoint = <&mipi_in_ucam2>;
+                                data-lanes = <1 2 3 4>;
+                        };
+                };
+        };
+
+        xc7160f: xc7160f@1b {
+		status = "okay";
+                compatible = "firefly,xc7160";
+                reg = <0x1b>;
+                clocks = <&cru SCLK_CIF_OUT>;
+                clock-names = "xvclk";
+                //avdd-supply = <&vcc_mipi>;
+                reset-gpios = <&gpio2 1 GPIO_ACTIVE_HIGH>;
+                pwdn-gpios = <&gpio3 28 GPIO_ACTIVE_HIGH>;
+                pinctrl-names = "rockchip,camera_default";
+                pinctrl-0 = <&cif_clkout>;
+
+                firefly,clkout-enabled-index = <0>;
+                rockchip,camera-module-index = <1>;
+                rockchip,camera-module-facing = "front";
+                rockchip,camera-module-name = "NC";
+                rockchip,camera-module-lens-name = "NC";
+
+                port {
+                        xc7160f_out: endpoint {
+                                remote-endpoint = <&mipi_in_ucam3>;
+                                data-lanes = <1 2 3 4>;
+                        };
+                };
+        };
+
+        vm149c: vm149c@0c {
+                compatible = "silicon touch,vm149c";
+                status = "okay";
+                reg = <0x0c>;
+                rockchip,camera-module-index = <0>;
+                rockchip,camera-module-facing = "back";
+        };
+
+        vm149c_front: vm149c_front@0c {
+                compatible = "silicon touch,vm149c";
+                status = "okay";
+                reg = <0x0c>;
+                rockchip,camera-module-index = <1>;
+                rockchip,camera-module-facing = "front";
+        };
+
 	ov13850: ov13850@36 {
 		compatible = "ovti,ov13850";
 		status = "okay";
@@ -179,6 +247,7 @@
 		pinctrl-0 = <&pwdn_cam0 &mipi_rst>;
 		pinctrl-1 = <&cam0_default_pins>;
 		pinctrl-2 = <&cam0_sleep_pins>;
+		lens-focus = <&vm149c>;
 
 		rockchip,camera-module-index = <0>;
 		rockchip,camera-module-facing = "back";
@@ -212,6 +281,7 @@
 		rockchip,camera-module-facing = "back";
 		rockchip,camera-module-name = "CMK-CT0116";
 		rockchip,camera-module-lens-name = "Largan-50013A1";
+		lens-focus = <&vm149c_front>;
 
 
 		port {
@@ -385,6 +455,11 @@
 				remote-endpoint = <&ucam_out0>;
 				data-lanes = <1 2>;
 			};
+                        mipi_in_ucam2: endpoint@2 {
+                                reg = <2>;
+                                remote-endpoint = <&xc7160b_out>;
+                                data-lanes = <1 2 3 4>;
+                        };
 		};
 
 		port@1 {
@@ -435,6 +510,11 @@
 				remote-endpoint = <&ucam_out1>;
 				data-lanes = <1 2>;
 			};
+                        mipi_in_ucam3: endpoint@2 {
+                                reg = <2>;
+                                remote-endpoint = <&xc7160f_out>;
+                                data-lanes = <1 2 3 4>;
+                        };
 		};
 
 		port@1 {

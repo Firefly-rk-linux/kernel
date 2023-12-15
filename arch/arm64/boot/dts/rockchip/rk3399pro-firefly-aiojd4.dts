@@ -64,6 +64,18 @@
 
 };
 
+&xc7160b{
+    status = "okay";
+    reset-gpios = <&gpio1 20 GPIO_ACTIVE_HIGH>;  /*GPIO1_C4 MIP_RST*/
+    pwdn-gpios = <&gpio2 1 GPIO_ACTIVE_HIGH>;   /*GPIO2_A1/MIPI_PDN1_H VSYNC*/
+};
+
+&xc7160f{
+    status = "okay";
+    reset-gpios = <&gpio1 20 GPIO_ACTIVE_HIGH>;  /*GPIO1_C4 MIP_RST*/
+    pwdn-gpios = <&gpio2 0 GPIO_ACTIVE_HIGH>;   /*GPIO2_A0/MIPI_PDN1_H VSYNC*/
+};
+
 &ov13850 {
     compatible = "ovti,ov13850";
     status = "okay";

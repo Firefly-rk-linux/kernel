@@ -100,7 +100,6 @@
 
     avdd-supply = <&vcc_mipi>; /* GPIO0_B5 CIF_PWR  AGND*/                                                                                                                                              
     dovdd-supply = <&vcc_mipi>; /* GPIO0_B5 CIF_PWR  AGND */
-    dvdd-supply = <&dvdd_1v2>; /* GPIO0_B1 DVP_PWR DVDD_1V2 */
 
     port {
         ucam_out0: endpoint {
@@ -133,7 +132,6 @@
 
     avdd-supply = <&vcc_mipi>; /* GPIO0_B5 CIF_PWR  AGND*/                                                                                                                                              
     dovdd-supply = <&vcc_mipi>; /* GPIO0_B5 CIF_PWR  AGND */
-    dvdd-supply = <&dvdd_1v2>; /* GPIO0_B1 DVP_PWR DVDD_1V2 */
 
 
     port {
@@ -161,16 +159,6 @@
     status = "okay";
 };
 
-
-&dvdd_1v2 {
-    compatible = "regulator-fixed";
-    enable-active-high;
-    gpio = <&gpio0 9 GPIO_ACTIVE_HIGH>;
-    pinctrl-names = "default";
-    pinctrl-0 = <&dvp_pwr>;
-    regulator-name = "dvdd_1v2";
-    status = "okay";
-};
 
 &cif_pwr {
     rockchip,pins = <0 13 RK_FUNC_GPIO &pcfg_pull_down>;

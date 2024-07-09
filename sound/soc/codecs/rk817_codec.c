@@ -1018,19 +1018,21 @@ static void rk817_hp_adc_poll(struct work_struct *work)
 		if (result < rk817->hp_det_adc_value + RK817_ADC_DRIFT_ADVALUE && //930+70 930-70  
 			result > rk817->hp_det_adc_value - RK817_ADC_DRIFT_ADVALUE)
 		{
-			if (!rk817->hp_insert){
+			if(!rk817->hp_insert || rk817->firefly_state == FIRST_BOOT)
+			{
 				rk817->hp_insert = true;
+				rk817->firefly_state = UFF_MUTE;
 				rk817_enable_hp_control(rk817, true);
-				rk817_codec_ctl_gpio(rk817, CODEC_SET_SPK, 0);
-				rk817_codec_ctl_gpio(rk817, CODEC_SET_HP, 1);
+				rk817_output_ctl(rk817);
 				snd_soc_jack_report(&rk817->hp_jack, SND_JACK_HEADPHONE, SND_JACK_HEADPHONE);
 			}
 		}else{
-			if (rk817->hp_insert){
+			if(rk817->hp_insert || rk817->firefly_state == FIRST_BOOT)
+			{
 				rk817->hp_insert = false;
+				rk817->firefly_state = UFF_MUTE;
 				rk817_enable_hp_control(rk817, false);
-				rk817_codec_ctl_gpio(rk817, CODEC_SET_SPK, 1);
-				rk817_codec_ctl_gpio(rk817, CODEC_SET_HP, 0);
+				rk817_output_ctl(rk817);
 				snd_soc_jack_report(&rk817->hp_jack, SND_JACK_HEADPHONE, SND_JACK_HEADPHONE);
 			}
 		}

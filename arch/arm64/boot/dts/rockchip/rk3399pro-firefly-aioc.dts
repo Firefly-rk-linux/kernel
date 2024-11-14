@@ -161,9 +161,9 @@
 	status = "disabled";
 };
 
-&dvdd_1v2 {
-	status = "disabled";
-};
+//&dvdd_1v2 {
+//	status = "disabled";
+//};
 
 &rkisp1_0 {
 	status = "okay";

@@ -93,7 +93,7 @@
 /* gamc0 */
 &gmac0 {
 	snps,reset-gpio = <&gpio4 RK_PA2 GPIO_ACTIVE_LOW>;
-	//tx_delay = <0x35>;
+	tx_delay = <0x31>;
 	status = "okay";
 };
 
@@ -122,7 +122,7 @@
 /* gmac1 */
 &gmac1 {
 	snps,reset-gpio = <&gpio4 RK_PB0 GPIO_ACTIVE_LOW>;
-	tx_delay = <0x45>;
+	tx_delay = <0x40>;
 	status = "okay";
 };
 

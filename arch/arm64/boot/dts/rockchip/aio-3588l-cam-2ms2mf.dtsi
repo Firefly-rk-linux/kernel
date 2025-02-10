@@ -460,10 +460,10 @@
 		power-domains = <&power RK3588_PD_VI>;
 		//avdd-supply = <&vcc_mipidphy0>;
 		cam-power-gpios = <&gpio2 RK_PC5 GPIO_ACTIVE_HIGH>;
-		power-gpios = <&gpio2 RK_PB5 GPIO_ACTIVE_HIGH>;
+		//power-gpios = <&gpio2 RK_PB5 GPIO_ACTIVE_HIGH>;
 		pwdn-gpios = <&gpio2 RK_PC4 GPIO_ACTIVE_LOW>;
 		
-		#define FF_COMPATIBLE
+		//#define FF_COMPATIBLE
 		firefly,clkout-enabled-index = <1>;
 		rockchip,camera-module-index = <0>;
 		rockchip,camera-module-facing = "back";

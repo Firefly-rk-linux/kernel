@@ -8,6 +8,7 @@
 
 #include "aio-3588l.dtsi"
 #include "aio-3588l-cam-8ms1m.dtsi"
+//#include "aio-3588l-cam-imx415.dtsi"
 #include "rk3588-firefly-demo.dtsi"
 
 / {

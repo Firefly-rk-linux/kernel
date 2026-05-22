@@ -20,7 +20,7 @@
 #include "rk3566-firefly-aiojd4-cam-imx415.dtsi"
 
 / {
-    model = "AIO-3566JD4 MIPI (Linux)";
+    model = "Firefly AIO-3566JD4 MIPI (Linux)";
     compatible = "rockchip,rk3566-firefly-aiojd4", "rockchip,rk3566";
 
     backlight_0: backlight-0 {
